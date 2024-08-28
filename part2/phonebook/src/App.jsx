@@ -9,7 +9,12 @@ const App = () => {
 
   useEffect(() => {
     console.log("effect");
-    axiosState.getAll().then((response) => setPersons(response.data));
+    axiosState
+      .getAll()
+      .then((response) => setPersons(response.data))
+      .catch((error) => {
+        console.log(error.message);
+      });
   }, []);
 
   const addPerson = (event, person) => {
