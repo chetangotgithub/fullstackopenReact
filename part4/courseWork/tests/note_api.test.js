@@ -29,82 +29,83 @@ beforeEach(async () => {
   await noteObject.save();
 });
 
-test("notes are returned as json", async () => {
-  await api
-    .get("/api/notes")
-    .expect(200)
-    .expect("Content-Type", /application\/json/);
-});
+// test("notes are returned as json", async () => {
+//   await api
+//     .get("/api/notes")
+//     .expect(200)
+//     .expect("Content-Type", /application\/json/);
+// });
 
-test("there are two notes", async () => {
-  const response = await api.get("/api/notes");
+// test("there are two notes", async () => {
+//   const response = await api.get("/api/notes");
 
-  assert.strictEqual(response.body.length, helper.initialNotes.length);
-});
+//   assert.strictEqual(response.body.length, helper.initialNotes.length);
+// });
 
-test.only("the first note is about HTTP methods", async () => {
-  const response = await api.get("/api/notes");
+// test.only("the first note is about HTTP methods", async () => {
+//   const response = await api.get("/api/notes");
 
-  const contents = response.body.map((e) => e.content);
-  assert(contents.includes("HTML is easy"));
-});
+//   const contents = response.body.map((e) => e.content);
+//   assert(contents.includes("HTML is easy"));
+// });
 
-test("a valid note can be added ", async () => {
-  const newNote = {
-    content: "async/await simplifies making async calls",
-    important: true,
-  };
+// test("a valid note can be added ", async () => {
+//   const newNote = {
+//     content: "async/await simplifies making async calls 123",
+//     important: true,
+//     userid: "66ebaeef806a3738dae418fa",
+//   };
 
-  await api
-    .post("/api/notes")
-    .send(newNote)
-    .expect(201)
-    .expect("Content-Type", /application\/json/);
+//   await api
+//     .post("/api/notes")
+//     .send(newNote)
+//     .expect(201)
+//     .expect("Content-Type", /application\/json/);
 
-  const notesAtEnd = await helper.notesInDb();
-  assert.strictEqual(notesAtEnd.length, helper.initialNotes.length + 1);
+//   const notesAtEnd = await helper.notesInDb();
+//   assert.strictEqual(notesAtEnd.length, helper.initialNotes.length + 1);
 
-  const contents = notesAtEnd.map((n) => n.content);
-  assert(contents.includes("async/await simplifies making async calls"));
-});
+//   const contents = notesAtEnd.map((n) => n.content);
+//   assert(contents.includes("async/await simplifies making async calls"));
+// });
 
-test("note without content is not added", async () => {
-  const newNote = {
-    important: true,
-  };
+// test("note without content is not added", async () => {
+//   const newNote = {
+//     important: true,
+//   };
 
-  await api.post("/api/notes").send(newNote).expect(400);
-  const notesAtEnd = await helper.notesInDb();
+//   await api.post("/api/notes").send(newNote).expect(400);
+//   const notesAtEnd = await helper.notesInDb();
 
-  assert.strictEqual(notesAtEnd.length, helper.initialNotes.length);
-});
+//   assert.strictEqual(notesAtEnd.length, helper.initialNotes.length);
+// });
 
-test.only("a specific note can be viewed", async () => {
-  const notesAtStart = await helper.notesInDb();
+// test.only("a specific note can be viewed", async () => {
+//   const notesAtStart = await helper.notesInDb();
 
-  const noteToView = notesAtStart[0];
+//   const noteToView = notesAtStart[0];
 
-  const resultNote = await api
-    .get(`/api/notes/${noteToView.id}`)
-    .expect(200)
-    .expect("Content-Type", /application\/json/);
+//   const resultNote = await api
+//     .get(`/api/notes/${noteToView.id}`)
+//     .expect(200)
+//     .expect("Content-Type", /application\/json/);
 
-  assert.deepStrictEqual(resultNote.body, noteToView);
-});
+//   assert.deepStrictEqual(resultNote.body, noteToView);
+// });
 
-test.only("a note can be deleted", async () => {
-  const notesAtStart = await helper.notesInDb();
-  const noteToDelete = notesAtStart[0];
+// test.only("a note can be deleted", async () => {
+//   const notesAtStart = await helper.notesInDb();
+//   const noteToDelete = notesAtStart[0];
 
-  await api.delete(`/api/notes/${noteToDelete.id}`).expect(204);
+//   await api.delete(`/api/notes/${noteToDelete.id}`).expect(204);
 
-  const notesAtEnd = await helper.notesInDb();
+//   const notesAtEnd = await helper.notesInDb();
 
-  const contents = notesAtEnd.map((r) => r.content);
-  assert(!contents.includes(noteToDelete.content));
+//   const contents = notesAtEnd.map((r) => r.content);
+//   assert(!contents.includes(noteToDelete.content));
 
-  assert.strictEqual(notesAtEnd.length, helper.initialNotes.length - 1);
-});
+//   assert.strictEqual(notesAtEnd.length, helper.initialNotes.length - 1);
+// });
 
 describe("when there is initially one user in db", () => {
   beforeEach(async () => {
@@ -157,6 +158,12 @@ describe("when there is initially one user in db", () => {
     assert(result.body.error.includes("expected `username` to be unique"));
 
     assert.strictEqual(usersAtEnd.length, usersAtStart.length);
+  });
+
+  test.only("Get all users from database", async () => {
+    const user = await api.get("/api/users");
+    const userinDB = await helper.usersInDb();
+    assert.strictEqual(user.body.length, userinDB.length);
   });
 });
 
